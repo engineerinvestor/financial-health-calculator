@@ -12,4 +12,4 @@ The main calculation and simulation functions.
 
 ## Strategy Comparison
 
-::: fundedness.simulate.compare_strategies
+::: fundedness.withdrawals.comparison.compare_strategies
