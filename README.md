@@ -1,14 +1,21 @@
 # Financial Health Calculator
 
-A comprehensive Python financial planning toolkit with CEFR calculations, Monte Carlo simulations, and beautiful Plotly visualizations.
-
+[![PyPI version](https://img.shields.io/pypi/v/fundedness.svg)](https://pypi.org/project/fundedness/)
+[![Python versions](https://img.shields.io/pypi/pyversions/fundedness.svg)](https://pypi.org/project/fundedness/)
+[![CI](https://github.com/engineerinvestor/financial-health-calculator/actions/workflows/ci.yml/badge.svg)](https://github.com/engineerinvestor/financial-health-calculator/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/engineerinvestor/financial-health-calculator/branch/main/graph/badge.svg)](https://codecov.io/gh/engineerinvestor/financial-health-calculator)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://engineerinvestor.github.io/financial-health-calculator/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/engineerinvestor/financial-health-calculator/blob/main/examples/01_cefr_basics.ipynb)
+
+A comprehensive Python financial planning toolkit with CEFR calculations, Monte Carlo simulations, and beautiful Plotly visualizations.
 
 ## Features
 
 - **CEFR (Certainty-Equivalent Funded Ratio)**: A fundedness metric that accounts for taxes, liquidity, and concentration risk
 - **Monte Carlo Simulations**: Project retirement outcomes with configurable market assumptions
-- **Withdrawal Strategy Lab**: Compare strategies including fixed SWR, guardrails, VPW, and RMD-style
+- **Withdrawal Strategy Lab**: Compare strategies including fixed SWR, guardrails, VPW, RMD-style, and Merton optimal
+- **Utility Optimization**: Victor Haghani / Elm Wealth methodology for optimal spending and allocation
 - **Beautiful Visualizations**: Interactive Plotly charts with fan charts, waterfalls, and survival curves
 - **REST API**: FastAPI backend for programmatic access
 - **Streamlit App**: User-friendly web interface
@@ -122,6 +129,22 @@ Where τ = tax rate, λ = liquidity factor, ρ = reliability factor
 | Guardrails | Adjustable with floor/ceiling | Balance |
 | VPW | Age-based variable percentage | Maximizing spending |
 | RMD-Style | IRS distribution table based | Tax efficiency |
+| Merton Optimal | Utility-maximizing spending rate | Optimality |
+
+### Utility Optimization
+
+The toolkit includes Merton's optimal consumption and portfolio choice framework, as applied in modern retirement planning research<sup>[1]</sup>:
+
+- **Optimal Equity Allocation**: `k* = (μ - r) / (γ × σ²)`
+- **Wealth-Adjusted Allocation**: Reduces equity as wealth approaches subsistence floor
+- **Optimal Spending Rate**: Increases with age as horizon shortens
+- **Expected Lifetime Utility**: Track utility across Monte Carlo paths
+
+Key insights from this methodology:
+1. Optimal spending starts low (~2-3%) and rises with age
+2. Allocation should decrease as wealth approaches the floor
+3. Risk aversion (gamma) is the critical input parameter
+4. The 4% rule is suboptimal from a utility perspective
 
 ## Development
 
@@ -153,13 +176,16 @@ financial-health-calculator/
 ├── fundedness/           # Core Python package
 │   ├── models/           # Pydantic data models
 │   ├── viz/              # Plotly visualizations
-│   ├── withdrawals/      # Withdrawal strategies
-│   ├── allocation/       # Asset allocation strategies
+│   ├── withdrawals/      # Withdrawal strategies (SWR, guardrails, VPW, Merton)
+│   ├── allocation/       # Asset allocation strategies (constant, glidepath, Merton)
 │   ├── cefr.py           # CEFR calculation
-│   ├── simulate.py       # Monte Carlo engine
+│   ├── simulate.py       # Monte Carlo engine with utility tracking
+│   ├── merton.py         # Merton optimal formulas
+│   ├── optimize.py       # Policy parameter optimization
 │   └── policies.py       # Spending/allocation policies
 ├── api/                  # FastAPI REST API
 ├── streamlit_app/        # Streamlit web application
+│   └── pages/            # Includes Utility Optimization page
 ├── examples/             # Jupyter notebooks
 └── tests/                # pytest tests
 ```
@@ -173,6 +199,12 @@ financial-health-calculator/
 ## License
 
 MIT License
+
+## References
+
+1. Haghani, V., & White, J. (2023). *The Missing Billionaires: A Guide to Better Financial Decisions*. Wiley. See also [Elm Wealth](https://elmwealth.com/) for related research on optimal spending and allocation.
+
+2. Merton, R. C. (1969). Lifetime Portfolio Selection under Uncertainty: The Continuous-Time Case. *The Review of Economics and Statistics*, 51(3), 247-257.
 
 ## Disclaimer
 

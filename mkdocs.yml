@@ -32,10 +32,12 @@ nav:
     - CEFR Explained: guide/cefr.md
     - Monte Carlo Simulations: guide/simulations.md
     - Withdrawal Strategies: guide/withdrawals.md
+    - Utility Optimization: guide/utility-optimization.md
     - Visualizations: guide/visualizations.md
   - API Reference:
     - Core: api/core.md
     - Models: api/models.md
+    - Merton Optimal: api/merton.md
     - Withdrawals: api/withdrawals.md
     - Visualizations: api/viz.md
   - Examples:

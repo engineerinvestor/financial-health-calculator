@@ -65,6 +65,38 @@ class FixedRealSWRPolicy(BaseWithdrawalPolicy):
             notes=f"Year {context.year}: base ${base_amount:,.0f} × {inflation_factor:.3f} inflation",
         )
 
+    def get_spending(
+        self,
+        wealth: np.ndarray,
+        year: int,
+        initial_wealth: float,
+    ) -> np.ndarray:
+        """Get spending for simulation (vectorized interface).
+
+        Args:
+            wealth: Current portfolio values (n_simulations,)
+            year: Current simulation year
+            initial_wealth: Starting portfolio value
+
+        Returns:
+            Spending amounts for each simulation path
+        """
+        # Base withdrawal from initial wealth
+        base_amount = initial_wealth * self.withdrawal_rate
+
+        # Adjust for cumulative inflation
+        inflation_factor = (1 + self.inflation_rate) ** year
+        spending = np.full_like(wealth, base_amount * inflation_factor)
+
+        # Apply floor if set
+        if self.floor_spending is not None:
+            spending = np.maximum(spending, self.floor_spending)
+
+        # Can't spend more than we have
+        spending = np.minimum(spending, np.maximum(wealth, 0))
+
+        return spending
+
 
 @dataclass
 class PercentOfPortfolioPolicy(BaseWithdrawalPolicy):
@@ -74,6 +106,7 @@ class PercentOfPortfolioPolicy(BaseWithdrawalPolicy):
     """
 
     withdrawal_rate: float = 0.04
+    floor: float | None = None
 
     @property
     def name(self) -> str:
@@ -111,3 +144,31 @@ class PercentOfPortfolioPolicy(BaseWithdrawalPolicy):
             is_floor_breach=is_floor_breach,
             is_ceiling_hit=is_ceiling_hit,
         )
+
+    def get_spending(
+        self,
+        wealth: np.ndarray,
+        year: int,
+        initial_wealth: float,
+    ) -> np.ndarray:
+        """Get spending for simulation (vectorized interface).
+
+        Args:
+            wealth: Current portfolio values (n_simulations,)
+            year: Current simulation year
+            initial_wealth: Starting portfolio value
+
+        Returns:
+            Spending amounts for each simulation path
+        """
+        spending = wealth * self.withdrawal_rate
+
+        # Apply floor if set
+        floor = self.floor or self.floor_spending
+        if floor is not None:
+            spending = np.maximum(spending, floor)
+
+        # Can't spend more than we have
+        spending = np.minimum(spending, np.maximum(wealth, 0))
+
+        return spending

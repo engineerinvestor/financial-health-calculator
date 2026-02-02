@@ -31,6 +31,12 @@ class SimulationResult:
     median_terminal_wealth: float = 0.0
     mean_terminal_wealth: float = 0.0
 
+    # Utility metrics (for utility-integrated simulation)
+    utility_paths: np.ndarray | None = None  # shape: n_simulations x n_years
+    expected_lifetime_utility: float | None = None
+    certainty_equivalent_consumption: float | None = None
+    utility_percentiles: dict[str, np.ndarray] = field(default_factory=dict)
+
     # Configuration
     n_simulations: int = 0
     n_years: int = 0
@@ -399,3 +405,155 @@ class AllocationPolicy:
     ) -> float | np.ndarray:
         """Get stock allocation (can be constant or per-path)."""
         raise NotImplementedError
+
+
+def run_simulation_with_utility(
+    initial_wealth: float,
+    spending_policy: "SpendingPolicy",
+    allocation_policy: "AllocationPolicy",
+    config: SimulationConfig,
+    utility_model: "UtilityModel",
+    spending_floor: float | None = None,
+    survival_probabilities: np.ndarray | None = None,
+) -> SimulationResult:
+    """Run simulation tracking lifetime utility.
+
+    This function extends run_simulation_with_policy to also track utility
+    at each time step, calculate expected lifetime utility, and compute
+    the certainty equivalent consumption.
+
+    Args:
+        initial_wealth: Starting portfolio value
+        spending_policy: Policy determining annual spending
+        allocation_policy: Policy determining asset allocation
+        config: Simulation configuration
+        utility_model: Utility model for calculating period utility
+        spending_floor: Minimum acceptable spending
+        survival_probabilities: P(alive) at each year (optional)
+
+    Returns:
+        SimulationResult with utility metrics populated
+    """
+    # Import here to avoid circular imports
+    from fundedness.models.utility import UtilityModel
+
+    n_sim = config.n_simulations
+    n_years = config.n_years
+    seed = config.random_seed
+
+    rng = np.random.default_rng(seed)
+
+    # Initialize paths
+    wealth_paths = np.zeros((n_sim, n_years + 1))
+    wealth_paths[:, 0] = initial_wealth
+    spending_paths = np.zeros((n_sim, n_years))
+    utility_paths = np.zeros((n_sim, n_years))
+
+    time_to_ruin = np.full(n_sim, np.inf)
+    time_to_floor_breach = np.full(n_sim, np.inf) if spending_floor else None
+
+    # Default survival probabilities (all survive)
+    if survival_probabilities is None:
+        survival_probabilities = np.ones(n_years)
+
+    # Generate all random draws upfront
+    z = rng.standard_normal((n_sim, n_years))
+
+    # Simulate year by year
+    for year in range(n_years):
+        current_wealth = wealth_paths[:, year]
+
+        # Get spending from policy
+        spending = spending_policy.get_spending(
+            wealth=current_wealth,
+            year=year,
+            initial_wealth=initial_wealth,
+        )
+        spending_paths[:, year] = spending
+
+        # Calculate utility for this period's consumption
+        for i in range(n_sim):
+            utility_paths[i, year] = utility_model.utility(spending[i])
+
+        # Track floor breach
+        if time_to_floor_breach is not None and spending_floor:
+            floor_breach_mask = (spending < spending_floor) & np.isinf(time_to_floor_breach)
+            time_to_floor_breach[floor_breach_mask] = year
+
+        # Get allocation from policy
+        stock_weight = allocation_policy.get_allocation(
+            wealth=current_wealth,
+            year=year,
+            initial_wealth=initial_wealth,
+        )
+
+        # Calculate returns for this allocation
+        portfolio_return = config.market_model.expected_portfolio_return(stock_weight)
+        portfolio_vol = config.market_model.portfolio_volatility(stock_weight)
+
+        returns = portfolio_return - portfolio_vol**2 / 2 + portfolio_vol * z[:, year]
+
+        # Update wealth
+        wealth_after_spending = np.maximum(current_wealth - spending, 0)
+        wealth_paths[:, year + 1] = wealth_after_spending * (1 + returns)
+
+        # Track ruin
+        ruin_mask = (wealth_paths[:, year + 1] <= 0) & np.isinf(time_to_ruin)
+        time_to_ruin[ruin_mask] = year + 1
+
+    # Calculate discounted lifetime utility for each path
+    discount_factors = np.array([
+        (1 + utility_model.time_preference) ** (-t) * survival_probabilities[t]
+        for t in range(n_years)
+    ])
+
+    # Lifetime utility per path
+    discounted_utilities = utility_paths * discount_factors
+    lifetime_utilities = np.sum(discounted_utilities, axis=1)
+
+    # Expected lifetime utility (mean across paths)
+    expected_lifetime_utility = np.mean(lifetime_utilities)
+
+    # Certainty equivalent consumption
+    # Find the constant consumption that gives same expected utility
+    mean_spending = np.mean(spending_paths)
+    ce_consumption = utility_model.certainty_equivalent(
+        np.mean(spending_paths, axis=1)  # Average spending per path
+    )
+
+    # Calculate percentiles
+    wealth_percentiles = {}
+    spending_percentiles = {}
+    utility_percentiles = {}
+
+    for p in config.percentiles:
+        key = f"P{p}"
+        wealth_percentiles[key] = np.percentile(wealth_paths[:, 1:], p, axis=0)
+        spending_percentiles[key] = np.percentile(spending_paths, p, axis=0)
+        utility_percentiles[key] = np.percentile(utility_paths, p, axis=0)
+
+    terminal_wealth = wealth_paths[:, -1]
+
+    return SimulationResult(
+        wealth_paths=wealth_paths[:, 1:],
+        spending_paths=spending_paths,
+        utility_paths=utility_paths,
+        time_to_ruin=time_to_ruin,
+        time_to_floor_breach=time_to_floor_breach,
+        wealth_percentiles=wealth_percentiles,
+        spending_percentiles=spending_percentiles,
+        utility_percentiles=utility_percentiles,
+        success_rate=np.mean(np.isinf(time_to_ruin)),
+        floor_breach_rate=np.mean(~np.isinf(time_to_floor_breach)) if time_to_floor_breach is not None else 0.0,
+        median_terminal_wealth=np.median(terminal_wealth),
+        mean_terminal_wealth=np.mean(terminal_wealth),
+        expected_lifetime_utility=expected_lifetime_utility,
+        certainty_equivalent_consumption=ce_consumption,
+        n_simulations=n_sim,
+        n_years=n_years,
+        random_seed=seed,
+    )
+
+
+# Type alias for UtilityModel (to avoid import issues)
+UtilityModel = "UtilityModel"
