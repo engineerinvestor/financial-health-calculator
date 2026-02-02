@@ -139,22 +139,22 @@ class MarketModel(BaseModel):
 
     def expected_portfolio_return(
         self,
-        stock_weight: float,
-        bond_weight: Optional[float] = None,
-    ) -> float:
+        stock_weight: float | np.ndarray,
+        bond_weight: float | np.ndarray | None = None,
+    ) -> float | np.ndarray:
         """Calculate expected return for a portfolio.
 
         Args:
-            stock_weight: Weight in stocks (0-1)
+            stock_weight: Weight in stocks (0-1), scalar or array
             bond_weight: Weight in bonds (remainder is cash if not specified)
 
         Returns:
-            Expected annual real return
+            Expected annual real return (scalar or array matching input)
         """
         if bond_weight is None:
             bond_weight = 1 - stock_weight
 
-        cash_weight = max(0, 1 - stock_weight - bond_weight)
+        cash_weight = np.maximum(0, 1 - stock_weight - bond_weight)
 
         return (
             stock_weight * self.stock_return
@@ -164,25 +164,36 @@ class MarketModel(BaseModel):
 
     def portfolio_volatility(
         self,
-        stock_weight: float,
-        bond_weight: Optional[float] = None,
-    ) -> float:
+        stock_weight: float | np.ndarray,
+        bond_weight: float | np.ndarray | None = None,
+    ) -> float | np.ndarray:
         """Calculate portfolio volatility.
 
         Args:
-            stock_weight: Weight in stocks (0-1)
+            stock_weight: Weight in stocks (0-1), scalar or array
             bond_weight: Weight in bonds (remainder is cash if not specified)
 
         Returns:
-            Annual portfolio volatility
+            Annual portfolio volatility (scalar or array matching input)
         """
         if bond_weight is None:
             bond_weight = 1 - stock_weight
 
-        cash_weight = max(0, 1 - stock_weight - bond_weight)
-        weights = np.array([stock_weight, bond_weight, cash_weight, 0])
+        cash_weight = np.maximum(0, 1 - stock_weight - bond_weight)
 
         cov = self.get_covariance_matrix()
-        portfolio_variance = weights @ cov @ weights
 
-        return np.sqrt(portfolio_variance)
+        # Handle both scalar and array inputs
+        if isinstance(stock_weight, np.ndarray):
+            # Vectorized computation for array inputs
+            # weights shape: (n_samples, 4)
+            weights = np.column_stack([stock_weight, bond_weight, cash_weight, np.zeros_like(stock_weight)])
+            # cov @ weights.T has shape (4, n_samples)
+            # We want sum of weights[i] * (cov @ weights[i]) for each i
+            # This is equivalent to diag(weights @ cov @ weights.T)
+            portfolio_variance = np.einsum('ij,jk,ik->i', weights, cov, weights)
+            return np.sqrt(portfolio_variance)
+        else:
+            weights = np.array([stock_weight, bond_weight, cash_weight, 0])
+            portfolio_variance = weights @ cov @ weights
+            return np.sqrt(portfolio_variance)
