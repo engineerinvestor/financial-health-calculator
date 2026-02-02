@@ -1,4 +1,4 @@
-"""Utility Optimization page - Victor Haghani / Elm Wealth methodology."""
+"""Utility Optimization page - Merton optimal spending and allocation."""
 
 import numpy as np
 import streamlit as st

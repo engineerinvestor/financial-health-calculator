@@ -15,7 +15,7 @@ A comprehensive Python financial planning toolkit with CEFR calculations, Monte 
 - **CEFR (Certainty-Equivalent Funded Ratio)**: A fundedness metric that accounts for taxes, liquidity, and concentration risk
 - **Monte Carlo Simulations**: Project retirement outcomes with configurable market assumptions
 - **Withdrawal Strategy Lab**: Compare strategies including fixed SWR, guardrails, VPW, RMD-style, and Merton optimal
-- **Utility Optimization**: Victor Haghani / Elm Wealth methodology for optimal spending and allocation
+- **Utility Optimization**: Merton optimal spending and allocation based on lifetime utility maximization
 - **Beautiful Visualizations**: Interactive Plotly charts with fan charts, waterfalls, and survival curves
 - **REST API**: FastAPI backend for programmatic access
 - **Streamlit App**: User-friendly web interface
