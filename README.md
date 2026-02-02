@@ -18,12 +18,12 @@ A comprehensive Python financial planning toolkit with CEFR calculations, Monte 
 ### Installation
 
 ```bash
-pip install git+https://github.com/engineerinvestor/financial-health-calculator.git
+pip install fundedness
 ```
 
 For development with all extras:
 ```bash
-pip install "git+https://github.com/engineerinvestor/financial-health-calculator.git#egg=fundedness[all]"
+pip install "fundedness[all]"
 ```
 
 ### Basic Usage
