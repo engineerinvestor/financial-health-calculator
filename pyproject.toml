@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fundedness"
+version = "0.1.0"
+description = "A Python financial planning toolkit with CEFR calculations, Monte Carlo simulations, and beautiful visualizations"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Engineer Investor", email = "egr.investor@gmail.com" }
+]
+keywords = [
+    "finance",
+    "retirement",
+    "planning",
+    "CEFR",
+    "Monte Carlo",
+    "withdrawal",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+dependencies = [
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "pydantic>=2.0.0",
+    "plotly>=5.18.0",
+    "scipy>=1.11.0",
+]
+
+[project.optional-dependencies]
+streamlit = [
+    "streamlit>=1.29.0",
+]
+api = [
+    "fastapi>=0.108.0",
+    "uvicorn[standard]>=0.25.0",
+]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "hypothesis>=6.92.0",
+    "ruff>=0.1.9",
+    "mypy>=1.8.0",
+]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+]
+all = [
+    "fundedness[streamlit,api,dev,docs]",
+]
+
+[project.scripts]
+fundedness = "fundedness.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/engineerinvestor/financial-health-calculator"
+Documentation = "https://engineerinvestor.github.io/financial-health-calculator/"
+Repository = "https://github.com/engineerinvestor/financial-health-calculator"
+
+[tool.hatch.build.targets.wheel]
+packages = ["fundedness"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --cov=fundedness --cov-report=term-missing"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "D", "UP", "B", "C4", "SIM"]
+ignore = ["D100", "D104", "D107"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true

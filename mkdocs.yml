@@ -1,0 +1,49 @@
+site_name: Financial Health Calculator
+site_url: https://engineerinvestor.github.io/financial-health-calculator/
+repo_url: https://github.com/engineerinvestor/financial-health-calculator
+repo_name: engineerinvestor/financial-health-calculator
+
+theme:
+  name: material
+  palette:
+    primary: blue
+    accent: green
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.highlight
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+  - User Guide:
+    - CEFR Explained: guide/cefr.md
+    - Monte Carlo Simulations: guide/simulations.md
+    - Withdrawal Strategies: guide/withdrawals.md
+    - Visualizations: guide/visualizations.md
+  - API Reference:
+    - Core: api/core.md
+    - Models: api/models.md
+    - Withdrawals: api/withdrawals.md
+    - Visualizations: api/viz.md
+  - Examples:
+    - Tutorials: examples/tutorials.md
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - admonition
+  - toc:
+      permalink: true
