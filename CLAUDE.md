@@ -163,6 +163,18 @@ window.MathJax = {
 
 3. Use `\[...\]` for display math and `\(...\)` for inline math in markdown files.
 
+## Git Commit Attribution
+
+All commits must be attributed to:
+- **Name**: Engineer Investor
+- **Email**: egr.investor@gmail.com
+
+Ensure git config is set correctly before committing:
+```bash
+git config user.name "Engineer Investor"
+git config user.email "egr.investor@gmail.com"
+```
+
 ## References
 
 - Merton, R.C. (1969). Lifetime Portfolio Selection under Uncertainty. *The Review of Economics and Statistics*, 51(3), 247-257.
