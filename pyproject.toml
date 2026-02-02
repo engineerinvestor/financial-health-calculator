@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fundedness"
-version = "0.2.1"
+version = "0.2.2"
 description = "A Python financial planning toolkit with CEFR calculations, Monte Carlo simulations, and beautiful visualizations"
 readme = "README.md"
 license = "MIT"

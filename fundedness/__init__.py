@@ -8,7 +8,7 @@ This package provides tools for:
 - Beautiful Plotly visualizations
 """
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 from fundedness.cefr import CEFRResult, compute_cefr
 from fundedness.merton import (
