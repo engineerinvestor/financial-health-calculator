@@ -6,13 +6,15 @@ Classes implementing different withdrawal strategies.
 
 ::: fundedness.withdrawals.base.WithdrawalPolicy
 
+::: fundedness.withdrawals.base.BaseWithdrawalPolicy
+
 ## Fixed SWR
 
-::: fundedness.withdrawals.fixed_swr.FixedSWRPolicy
+::: fundedness.withdrawals.fixed_swr.FixedRealSWRPolicy
 
 ## Percentage of Portfolio
 
-::: fundedness.withdrawals.percent_of_portfolio.PercentOfPortfolioPolicy
+::: fundedness.withdrawals.fixed_swr.PercentOfPortfolioPolicy
 
 ## Guardrails
 
@@ -24,4 +26,4 @@ Classes implementing different withdrawal strategies.
 
 ## RMD-Style
 
-::: fundedness.withdrawals.rmd.RMDPolicy
+::: fundedness.withdrawals.rmd_style.RMDStylePolicy

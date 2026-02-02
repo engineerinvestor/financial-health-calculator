@@ -14,7 +14,7 @@ Pydantic models for representing financial data.
 
 ## Balance Sheet
 
-::: fundedness.models.balance_sheet.BalanceSheet
+::: fundedness.models.assets.BalanceSheet
 
 ## Liabilities
 
@@ -26,6 +26,14 @@ Pydantic models for representing financial data.
 
 ::: fundedness.models.household.Person
 
-## Market Assumptions
+## Market Model
 
-::: fundedness.models.assumptions.MarketAssumptions
+::: fundedness.models.market.MarketModel
+
+## Simulation Config
+
+::: fundedness.models.simulation.SimulationConfig
+
+## Tax Model
+
+::: fundedness.models.tax.TaxModel
