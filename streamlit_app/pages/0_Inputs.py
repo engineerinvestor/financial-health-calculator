@@ -1,5 +1,9 @@
 """Inputs page for asset, liability, and assumption entry."""
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 import streamlit as st
 
 from fundedness.models.household import Household, Person

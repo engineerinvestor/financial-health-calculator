@@ -10,6 +10,12 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports when running on Streamlit Cloud
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from streamlit_app.utils.session_state import initialize_session_state
 
 # Initialize session state
