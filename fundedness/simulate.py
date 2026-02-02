@@ -339,8 +339,26 @@ def run_simulation_with_policy(
         )
 
         # Calculate returns for this allocation
-        portfolio_return = config.market_model.expected_portfolio_return(stock_weight)
-        portfolio_vol = config.market_model.portfolio_volatility(stock_weight)
+        # Handle both scalar and array allocations
+        if isinstance(stock_weight, np.ndarray):
+            # Array allocation: compute returns inline for each path
+            bond_weight = 1 - stock_weight
+            portfolio_return = (
+                stock_weight * config.market_model.stock_return
+                + bond_weight * config.market_model.bond_return
+            )
+            portfolio_vol = np.sqrt(
+                stock_weight**2 * config.market_model.stock_volatility**2
+                + bond_weight**2 * config.market_model.bond_volatility**2
+                + 2 * stock_weight * bond_weight
+                * config.market_model.stock_volatility
+                * config.market_model.bond_volatility
+                * config.market_model.stock_bond_correlation
+            )
+        else:
+            # Scalar allocation: use market model methods
+            portfolio_return = config.market_model.expected_portfolio_return(stock_weight)
+            portfolio_vol = config.market_model.portfolio_volatility(stock_weight)
 
         returns = portfolio_return - portfolio_vol**2 / 2 + portfolio_vol * z[:, year]
 
@@ -488,8 +506,26 @@ def run_simulation_with_utility(
         )
 
         # Calculate returns for this allocation
-        portfolio_return = config.market_model.expected_portfolio_return(stock_weight)
-        portfolio_vol = config.market_model.portfolio_volatility(stock_weight)
+        # Handle both scalar and array allocations
+        if isinstance(stock_weight, np.ndarray):
+            # Array allocation: compute returns inline for each path
+            bond_weight = 1 - stock_weight
+            portfolio_return = (
+                stock_weight * config.market_model.stock_return
+                + bond_weight * config.market_model.bond_return
+            )
+            portfolio_vol = np.sqrt(
+                stock_weight**2 * config.market_model.stock_volatility**2
+                + bond_weight**2 * config.market_model.bond_volatility**2
+                + 2 * stock_weight * bond_weight
+                * config.market_model.stock_volatility
+                * config.market_model.bond_volatility
+                * config.market_model.stock_bond_correlation
+            )
+        else:
+            # Scalar allocation: use market model methods
+            portfolio_return = config.market_model.expected_portfolio_return(stock_weight)
+            portfolio_vol = config.market_model.portfolio_volatility(stock_weight)
 
         returns = portfolio_return - portfolio_vol**2 / 2 + portfolio_vol * z[:, year]
 
