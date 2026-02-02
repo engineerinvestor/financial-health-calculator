@@ -1,4 +1,7 @@
-"""Main Streamlit application entry point."""
+"""Main Streamlit application entry point.
+
+Financial Health Calculator - A comprehensive retirement planning toolkit.
+"""
 
 import streamlit as st
 
