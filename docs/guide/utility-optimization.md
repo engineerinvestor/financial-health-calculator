@@ -18,28 +18,34 @@ Utility optimization provides a rigorous framework for finding the **optimal** s
 
 The Merton formula gives the optimal fraction to invest in risky assets:
 
-$$k^* = \frac{\mu - r}{\gamma \times \sigma^2}$$
+\[
+k^* = \frac{\mu - r}{\gamma \cdot \sigma^2}
+\]
 
 Where:
 
-- $\mu$ = expected stock return
-- $r$ = bond/risk-free return
-- $\gamma$ = risk aversion coefficient
-- $\sigma$ = stock volatility
+- \(\mu\) = expected stock return
+- \(r\) = bond/risk-free return
+- \(\gamma\) = risk aversion coefficient
+- \(\sigma\) = stock volatility
 
 ### Certainty Equivalent Return
 
 The guaranteed return that provides the same utility as the risky portfolio:
 
-$$r_{CE} = r + k^*(\mu - r) - \frac{\gamma \times k^{*2} \times \sigma^2}{2}$$
+\[
+r_{CE} = r + k^*(\mu - r) - \frac{\gamma \cdot (k^*)^2 \cdot \sigma^2}{2}
+\]
 
 ### Optimal Spending Rate
 
 For an infinite horizon:
 
-$$c^* = r_{CE} - \frac{r_{CE} - \rho}{\gamma}$$
+\[
+c^* = r_{CE} - \frac{r_{CE} - \rho}{\gamma}
+\]
 
-Where $\rho$ is your time preference (discount rate).
+Where \(\rho\) is your time preference (discount rate).
 
 ## Quick Start
 
@@ -82,9 +88,11 @@ print(f"Year 1 spending: ${1_000_000 * result.optimal_spending_rate:,.0f}")
 
 Near the subsistence floor, you can't afford to take risk. The wealth-adjusted allocation accounts for this:
 
-$$k_{adj} = k^* \times \frac{W - F}{W}$$
+\[
+k_{adj} = k^* \cdot \frac{W - F}{W}
+\]
 
-Where $W$ is wealth and $F$ is the subsistence floor.
+Where \(W\) is wealth and \(F\) is the subsistence floor.
 
 As wealth approaches the floor, allocation approaches zero. As wealth rises far above the floor, allocation approaches the unconstrained optimal.
 
