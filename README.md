@@ -3,6 +3,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/fundedness.svg)](https://pypi.org/project/fundedness/)
 [![Python versions](https://img.shields.io/pypi/pyversions/fundedness.svg)](https://pypi.org/project/fundedness/)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://engineerinvestor.github.io/financial-health-calculator/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://financial-health-calculator.streamlit.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/engineerinvestor/financial-health-calculator/blob/main/examples/01_cefr_basics.ipynb)
 
