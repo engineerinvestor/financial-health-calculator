@@ -204,6 +204,42 @@ MIT License
 
 2. Merton, R. C. (1969). Lifetime Portfolio Selection under Uncertainty: The Continuous-Time Case. *The Review of Economics and Statistics*, 51(3), 247-257.
 
+## Citation
+
+If you use this package in academic work, please cite:
+
+```bibtex
+@software{fundedness,
+  title = {Fundedness: A Python Financial Planning Toolkit},
+  author = {Engineer Investor},
+  year = {2024},
+  url = {https://github.com/engineerinvestor/financial-health-calculator},
+  version = {0.2.1}
+}
+```
+
+For the underlying methodology, please also cite:
+
+```bibtex
+@article{merton1969lifetime,
+  title = {Lifetime Portfolio Selection under Uncertainty: The Continuous-Time Case},
+  author = {Merton, Robert C.},
+  journal = {The Review of Economics and Statistics},
+  volume = {51},
+  number = {3},
+  pages = {247--257},
+  year = {1969},
+  publisher = {MIT Press}
+}
+
+@book{haghani2023missing,
+  title = {The Missing Billionaires: A Guide to Better Financial Decisions},
+  author = {Haghani, Victor and White, James},
+  year = {2023},
+  publisher = {Wiley}
+}
+```
+
 ## Disclaimer
 
 This tool is for educational purposes only and does not constitute financial advice. Consult a qualified financial advisor for personalized recommendations.
